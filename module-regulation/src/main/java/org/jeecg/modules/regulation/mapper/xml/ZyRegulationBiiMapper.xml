@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.regulation.mapper.ZyRegulationBiiMapper">
+    <sql id="queryLogic">
+        WHERE zrb.del_flag = 0
+        <if test="queryDTO.active != null">
+            AND zrb.active = #{queryDTO.active}
+        </if>
+        <if test="queryDTO.name != null and queryDTO.name != ''">
+            AND zrb.name LIKE CONCAT('%', #{queryDTO.name}, '%')
+        </if>
+        <if test="queryDTO.docIdList != null and queryDTO.docIdList.size() > 0">
+            AND zrb.content_doc_id IN
+            <foreach collection="queryDTO.docIdList" item="deptId" index="index" open="("
+                     close=")" separator=",">
+                #{deptId}
+            </foreach>
+        </if>
+        <if test="queryDTO.codeList != null and queryDTO.codeList.size() > 0">
+            AND zrb.code IN
+            <foreach collection="queryDTO.codeList" item="code" index="index" open="("
+                     close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+        <if test="queryDTO.identifierList != null and queryDTO.identifierList.size() > 0">
+            AND zrb.identifier IN
+            <foreach collection="queryDTO.identifierList" item="identifier" index="index" open="("
+                     close=")" separator=",">
+                #{identifier}
+            </foreach>
+        </if>
+        <if test="queryDTO.levelNameList != null and queryDTO.levelNameList.size() > 0">
+            AND zrb.level_name IN
+            <foreach collection="queryDTO.levelNameList" item="levelName" index="index" open="("
+                     close=")" separator=",">
+                #{levelName}
+            </foreach>
+        </if>
+        <if test="queryDTO.subCategoryNameList != null and queryDTO.subCategoryNameList.size() > 0">
+            AND zrb.sub_category_name IN
+            <foreach collection="queryDTO.subCategoryNameList" item="subCategoryName" index="index" open="("
+                     close=")" separator=",">
+                #{subCategoryName}
+            </foreach>
+        </if>
+    </sql>
+
+    <delete id="removeByCode">
+        DELETE
+        FROM zy_regulation_bii
+        WHERE code = #{code}
+    </delete>
+
+    <select id="queryByIdentifier"  resultType="org.jeecg.modules.regulation.entity.ZyRegulationBii">
+        SELECT *
+        FROM zy_regulation_bii
+        WHERE identifier = #{identifier}
+    </select>
+
+    <select id="queryNewestVersionPageList" resultType="org.jeecg.modules.regulation.vo.ZyRegulationBiiVO">
+        SELECT zrb.id,
+        zr.id as read_id,
+        zrb.name,
+        zrb.code,
+        zrb.identifier,
+        zrb.category_id,
+        zrb.category_name,
+        zrb.sub_category_id,
+        zrb.sub_category_name,
+        zrb.level_id,
+        zrb.level_name,
+        zrbh.content_doc_id,
+        zrbh.content_file_id,
+        zrbh.version,
+        zrbh.create_time,
+        zrbh.publish_time
+        FROM zy_regulation_bii zrb
+        INNER JOIN zy_regulation_bii_history zrbh
+        ON zrb.code = zrbh.code AND
+        zrbh.id IN (SELECT MAX(id) FROM zy_regulation_bii_history GROUP BY identifier)
+        LEFT JOIN (SELECT MAX(id) AS id, identifier FROM zy_read GROUP BY identifier) zr
+        ON zrb.identifier = zr.identifier
+        <include refid="queryLogic"></include>
+        ORDER BY zrbh.publish_time DESC, zrbh.create_time DESC
+    </select>
+
+    <select id="queryList" resultType="org.jeecg.modules.regulation.entity.ZyRegulationBii">
+        SELECT zrb.*
+        FROM zy_regulation_bii zrb
+        <include refid="queryLogic"></include>
+        ORDER BY GREATEST(IFNULL(zrb.create_time, 0), IFNULL(zrb.update_time, 0)) DESC
+    </select>
+
+    <update id="inactivateById">
+        UPDATE zy_regulation_bii
+        SET active = 0
+        WHERE id = #{id}
+    </update>
+
+    <update id="inactivateByIdentifier">
+        UPDATE zy_regulation_bii
+        SET active = 0
+        WHERE identifier = #{identifier}
+    </update>
+
+    <select id="queryByContentFileId" resultType="org.jeecg.modules.regulation.entity.ZyRegulationBii">
+        SELECT *
+        FROM zy_regulation_bii zrb
+        WHERE zrb.content_file_id = #{contentFileId}
+    </select>
+
+</mapper>

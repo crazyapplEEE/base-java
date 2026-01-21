@@ -1,0 +1,162 @@
+package org.jeecg.modules.system.controller;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.common.constant.CacheConstant;
+import org.jeecg.common.system.query.QueryGenerator;
+import org.jeecg.modules.system.entity.SysDictItem;
+import org.jeecg.modules.system.service.ISysDictItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+
+/**
+ * <p>
+ * 前端控制器
+ * </p>
+ *
+ * @Author zhangweijian
+ * @since 2018-12-28
+ */
+@Api(tags = "JEECG-系统字典") @RestController @RequestMapping("/sys/dictItem") @Slf4j public class SysDictItemController {
+    @Autowired private ISysDictItemService sysDictItemService;
+
+    /**
+     * @param sysDictItem
+     * @param pageNo
+     * @param pageSize
+     * @param req
+     * @return
+     * @功能：查询字典数据
+     */
+    @GetMapping(value = "/list") public Result<IPage<SysDictItem>> queryPageList(SysDictItem sysDictItem,
+        @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize, HttpServletRequest req) {
+        Result<IPage<SysDictItem>> result = new Result<>();
+        QueryWrapper<SysDictItem> queryWrapper = QueryGenerator.initQueryWrapper(sysDictItem, req.getParameterMap());
+        queryWrapper.orderByAsc("sort_order");
+        Page<SysDictItem> page = new Page<>(pageNo, pageSize);
+        IPage<SysDictItem> pageList = sysDictItemService.page(page, queryWrapper);
+        result.setSuccess(true);
+        result.setResult(pageList);
+        return result;
+    }
+
+    /**
+     * @return
+     * @功能：新增
+     */
+    //@RequiresRoles({"admin"})
+    @PostMapping(value = "/add") @CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
+    public Result<SysDictItem> add(@RequestBody SysDictItem sysDictItem) {
+        Result<SysDictItem> result = new Result<>();
+        try {
+            sysDictItemService.save(sysDictItem);
+            result.success("保存成功！");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * @param sysDictItem
+     * @return
+     * @功能：编辑
+     */
+    //@RequiresRoles({"admin"})
+    @PostMapping(value = "/edit") @CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
+    public Result<SysDictItem> edit(@RequestBody SysDictItem sysDictItem) {
+        Result<SysDictItem> result = new Result<>();
+        SysDictItem sysdict = sysDictItemService.getById(sysDictItem.getId());
+        if (sysdict == null) {
+            result.error500("未找到对应实体");
+        } else {
+            boolean ok = sysDictItemService.updateById(sysDictItem);
+            //TODO 返回false说明什么？
+            if (ok) {
+                result.success("编辑成功!");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param id
+     * @return
+     * @功能：删除字典数据
+     */
+    //@RequiresRoles({"admin"})
+    @PostMapping(value = "/delete") @CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
+    public Result<SysDictItem> delete(@RequestParam(name = "id") String id) {
+        Result<SysDictItem> result = new Result<>();
+        SysDictItem joinSystem = sysDictItemService.getById(id);
+        if (joinSystem == null) {
+            result.error500("未找到对应实体");
+        } else {
+            boolean ok = sysDictItemService.removeById(id);
+            if (ok) {
+                result.success("删除成功!");
+            }
+        }
+        return result;
+    }
+
+    /**
+     * @param ids
+     * @return
+     * @功能：批量删除字典数据
+     */
+    //@RequiresRoles({"admin"})
+    @PostMapping(value = "/deleteBatch") @CacheEvict(value = CacheConstant.SYS_DICT_CACHE, allEntries = true)
+    public Result<SysDictItem> deleteBatch(@RequestParam(name = "ids") String ids) {
+        Result<SysDictItem> result = new Result<>();
+        if (ids == null || "".equals(ids.trim())) {
+            result.error500("参数不识别！");
+        } else {
+            this.sysDictItemService.removeByIds(Arrays.asList(ids.split(",")));
+            result.success("删除成功!");
+        }
+        return result;
+    }
+
+    /**
+     * 字典值重复校验
+     *
+     * @param sysDictItem
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/dictItemCheck") @ApiOperation("字典重复校验接口") public Result<Object> doDictItemCheck(
+        SysDictItem sysDictItem, HttpServletRequest request) {
+        int num = 0;
+        LambdaQueryWrapper<SysDictItem> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysDictItem::getItemValue, sysDictItem.getItemValue());
+        queryWrapper.eq(SysDictItem::getDictId, sysDictItem.getDictId());
+        if (StringUtils.isNotBlank(sysDictItem.getId())) {
+            // 编辑页面校验
+            queryWrapper.ne(SysDictItem::getId, sysDictItem.getId());
+        }
+        num = sysDictItemService.count(queryWrapper);
+        if (num == 0) {
+            // 该值可用
+            return Result.OK("该值可用！");
+        } else {
+            // 该值不可用
+            log.info("该值不可用，系统中已存在！");
+            return Result.error("该值不可用，系统中已存在！");
+        }
+    }
+
+}

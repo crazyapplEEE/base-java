@@ -1,0 +1,378 @@
+server:
+  port: 8050
+  tomcat:
+    max-swallow-size: -1
+  error:
+    include-exception: true
+    include-stacktrace: ALWAYS
+    include-message: ALWAYS
+  servlet:
+    context-path:
+  compression:
+    enabled: true
+    min-response-size: 1024
+    mime-types: application/javascript,application/json,application/xml,text/html,text/xml,text/plain,text/css,image/*
+
+# https://www.cnblogs.com/anquankeyinyang/p/15055422.html
+# https://www.jianshu.com/p/14d10481845e
+management:
+  endpoints:
+    enabled-by-default: false
+    # web:
+    #   exposure:
+    #     include: metrics,httptrace
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+  ## quartz定时任务,采用数据库方式
+  quartz:
+    job-store-type: jdbc
+    initialize-schema: embedded
+    #设置自动启动，默认为 true
+    auto-startup: true
+    #启动时更新己存在的Job
+    overwrite-existing-jobs: true
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: MyScheduler
+            instanceId: AUTO
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: false
+            misfireThreshold: 60000
+            clusterCheckinInterval: 10000
+            selectWithLockSQL: SELECT* FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true
+  #json 时间戳统一转换
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  jpa:
+    open-in-view: false
+  activiti:
+    check-process-definitions: false
+    #启用作业执行器
+    async-executor-activate: false
+    #启用异步执行器
+    job-executor-activate: false
+  aop:
+    proxy-target-class: true
+  #配置freemarker
+  freemarker:
+    # 设置模板后缀名
+    suffix: .ftl
+    # 设置文档类型
+    content-type: text/html
+    # 设置页面编码格式
+    charset: UTF-8
+    # 设置页面缓存
+    cache: false
+    prefer-file-system-access: false
+    # 设置ftl文件路径
+    template-loader-path:
+      - classpath:/templates
+  # 设置静态文件路径，js,css等
+  mvc:
+    static-path-pattern: /**
+  resource:
+    static-locations: classpath:/static/,classpath:/public/
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
+  datasource:
+    druid:
+      stat-view-servlet:
+        enabled: false
+        loginUsername: "zhiduAdmin"
+        loginPassword: "3X3W$Z_u_^6CZ82trkXN"
+        allow:
+      web-stat-filter:
+        enabled: true
+    dynamic:
+      druid: # 全局druid参数，绝大部分值和默认保持一致。(现已支持的参数如下,不清楚含义不要乱设置)
+        # 连接池的配置信息
+        # 初始化大小，最小，最大
+        initial-size: 5
+        min-idle: 5
+        maxActive: 20
+        # 配置获取连接等待超时的时间
+        maxWait: 60000
+        # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+        timeBetweenEvictionRunsMillis: 60000
+        # 配置一个连接在池中最小生存的时间，单位是毫秒
+        minEvictableIdleTimeMillis: 300000
+        # validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        # 打开PSCache，并且指定每个连接上PSCache的大小
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，"wall"用于防火墙
+        filters: stat,wall,slf4j
+        # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+      datasource:
+        master:
+          url: jdbc:mysql://10.26.202.10:3306/zhidu
+          username: bii_zhidu@jt_xxsj_test#biitest
+          password: 7av,^JTpd,Y5xZ]5BV(_
+          driver-class-name: com.mysql.cj.jdbc.Driver
+  #redis 配置
+  redis:
+    database: 0
+    host: 127.0.0.1
+    lettuce:
+      cluster:
+        refresh:
+          adaptive: true
+          period: 20
+      pool:
+        max-active: 8   #最大连接数据库连接数,设 0 为没有限制
+        max-idle: 8     #最大等待连接中的数量,设 0 为没有限制
+        max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+        min-idle: 0     #最小等待连接中的数量,设 0 为没有限制
+      shutdown-timeout: 100ms
+    password: "wZcy1Hwv@8qE"
+    port: 6379
+    timeout: 5000ms
+#mybatis plus 设置
+mybatis-plus:
+  mapper-locations: classpath*:org/jeecg/modules/**/xml/*Mapper.xml
+  global-config:
+    # 关闭MP3.0自带的banner
+    banner: false
+    db-config:
+      #主键类型  0:"数据库ID自增",1:"该类型为未设置主键类型", 2:"用户输入ID",3:"全局唯一ID (数字类型唯一ID)", 4:"全局唯一ID UUID",5:"字符串全局唯一ID (idWorker 的字符串表示)";
+      id-type: ASSIGN_ID
+      # 默认数据库表下划线命名
+      table-underline: true
+  configuration:
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 返回类型为Map,显示null对应的字段
+    call-setters-on-nulls: true
+#jeecg专用配置
+jeecg:
+  # 本地：local\Minio：minio\阿里云：alioss
+  uploadType: local
+  path:
+    #文件上传根目录 设置
+    upload: /opt/upFiles
+    #webapp文件路径
+    webapp: /opt/webapp
+  shiro:
+    excludeUrls: /sys/ssoMobile,/sys/sso,/sys/redirectSso,/regulation_bii/create_or_edit,/regulation_bii/inactivate,/regulation_bjmoa/create_or_edit,/regulation_bjmoa/board_create_or_edit,/regulation_bjmoa/inactivate,/websocket/chat,/regulation_bii/sync_to_qiqiao,/qywx/**,/regulation_bjmoa/oa_flow/**,/regulation_bjmoa/pull_qiqiao,/oaflow/**,/ams/bjmoa/get_notice,/regulation_bjmoa/initiate_oa_process,/regulation_bjmoa/initiate_board_oa_process,/regulation_bjmoa/replace_file,/regulation_bjmoa/replace_pdf_file,/regulation_bjmoa/replace_final_pdf_file,/regulation_bjmoa/create,/regulation_bjmoa/qiqiao_callback,/regulation_bjmoa/activate,/data_maintenance/**
+
+#Mybatis输出sql日志
+logging:
+  level:
+    org.jeecg.modules.system.mapper: info
+#swagger
+knife4j:
+  # 开启增强配置
+  enable: true
+  production: true
+  basic:
+    enable: true
+    username: natAdmin
+    password: 1amTempl@te
+
+# 京投-内容管理平台 （联系凌童获取token及appId）
+content-management:
+  biiAppId: "80000130000" # 本部
+  biiToken: "92d0ef872b03446382cb1fc0fa9023f2" # 本部
+  bjmoaAppId: "80000170000" # 轨道运营
+  bjmoaToken: "c15b298f5fbc4588901d94491601f43c" # 轨道运营
+  docTypeId: "H3-1"
+  baseUrl: "https://yth1.bii.com.cn"
+  uploadUrl: "${content-management.baseUrl}/service-router/router/upload"
+  downloadUrl: "${content-management.baseUrl}/service-router/router/download"
+  batchDownloadUrl: "${content-management.baseUrl}/service-router/router/batchDownload"
+  deleteUrl: "${content-management.baseUrl}/service-router/router/deleteFileReal"
+  previewUrl: "${content-management.baseUrl}/service-frond/preview"
+  renameUrl: "${content-management.baseUrl}/service-router/router/renameFile"
+  searchNewUrl: "${content-management.baseUrl}/service-router/router/search_new"
+  officeOperateUrl: "${content-management.baseUrl}/service-frond/wps/office_operate"
+  officeConvertUrl: "${content-management.baseUrl}/service-frond/wps/office_convert"
+  officeWrapheaderUrl: "${content-management.baseUrl}/service-frond/wps/office_wrapheader"
+  queryTaskUrl: "${content-management.baseUrl}/service-frond/wps/query_task"
+  downloadConvertedUrl: "${content-management.baseUrl}/service-frond/wps/cps/download"
+
+public_mp:
+  backendUrl: "https://mp.bii.com.cn/" # 要在backendUrl最后加斜杠
+  oauthTokenUrl: "https://mp.bii.com.cn/sys/oauth"
+  clientId: "26db94aa569144b1afe05ce71184d5a3"
+  clientSecret: "MDA0NDdiMGQxODEyNDAzMGJkOTdhZGQ0MmRkZWVhNmE="
+  tokenRedisKey: "PUBLIC_MANAGEMENT_PLATFORM_TOKEN_DEV"
+  deptTreeSelectRedisKey: "DEPT_TREE_SELECT_DEV"
+
+# 想从服务器访问外网需要配置proxy
+proxy:
+  ip: "10.99.202.82"
+  port: 3128
+  connect-timeout: 10000
+  socket-timeout: 10000
+  request-timeout: 6000
+# TO CHANGE
+sys:
+  loginUrl: "https://zhidutest.bii.com.cn/zhidu/#/user/login?loginid=%s&stamp=%s&token=%s"
+  biiLoginUrl: "https://zhidutest.bii.com.cn/zhidu/#/bii/index?qiqiaoUserId=%s"
+  bjmoaLoginUrl: "https://zhidutest.bii.com.cn/zhidu/#/bjmoa/index?qiqiaoUserId=%s"
+
+biisaas:
+  tokenRedisKey: "biisaas_TOKEN_"
+  baseUrl: "http://dy.bii.com.cn:18081/qiqiao/console/api/v1/bpms-integration"
+  corpId: "wwae49a5f164f53f25"
+  secret: "04865c9ce85c48719eb85b7973cd06ff"
+  account: "lingtong"
+  loginUserId: "85e123417e72221947a83c682f009567"
+  accessKeyUrl: "/securities/access_key"
+  accessTokenUrl: "/securities/qiqiao_token"
+  usersAccountUrl: "/open/users/account"
+  getUsersUrl: "/open/users/"
+  getDeptsFromQywxIds: "/open/departments/list/by_qwids"
+  callBackUrl: "/open/callback"
+  userSync:
+    applicationId: "ef132b94e287408d9c71cf46a08e1ca9"
+    formModelId: "cdd58c11dd1d49cf962560df5a45e9b5"
+  biiRegulationInfo:
+    applicationId: "cd363f9220154b3dba4d4a4cbcaea9c6"
+    formModelId: "c3c41729af7c4fdda59163a4534d56b1" # 制度信息单
+    regulationPlanFormModelId: "e419f347a3294b578b5fa936c2d8832b" # 制度计划立项单
+    parentRegulationFormModelId: "f044131e69a347acbbc251bcad34e6da" # 上级制度明细表
+    realFormModelId: "f3d6153916a7433d970644e3c2d0f920" # 制度发布单
+    realHistoryFormModelId: "f93b551849c749409c950dff9d4b6564" # 历史版本明细
+  bjmoaRegulationInfo:
+    bjmoaCarouselPictureRedisKey: "BJMOA-CAROUSEL-PICTURE-SELECT"
+    bjmoaManagementToolEntryRedisKey: "BJMOA_MANAGEMENT_TOOL_ENTRY"
+    applicationId: "f3feabed8e0a41eebeebbf37e78c6362"
+    formModelId: "ca59b6c660bb4bb8ba7ca2ab22124b85" # 轨道运营制度信息单
+    parentRegulationFormModelId: "dcaf746aa4f247f4b38a1efe42cfc172" # 轨道运营上级制度明细表
+    relatedRegulationFormModelId: "f1bbbf42f10841c48da0c2401e555711" # 关联记录明细表
+    realFormModelId: "c740a92aac95421c80058f2f82a80acb" # 轨道运营制度发布单
+    realHistoryFormModelId: "e84679d8ff5e44fcb380a55129dd2d0c" # 轨道运营历史版本明细
+    realParentFormModelId: "bb05dcd7f1bd4de9a8d723c0a094ee34" # 发布上级制度明细
+    realRelatedFormModelId: "c9c6dbebea6349ffa5c44dcc92db3fe8" # 发布库关联记录明细
+    carouselPictureId: "c10954c382b94234b6c8f22dd2351ffa" # 轮播图管理表
+    managementToolEntryFormModelId: "e45886911a7b48119625d8d9b933822e" # 管理工具快捷入口表
+    signatureFormModelId: "cdda3c01dc1c4dfaafb0c85938979477" # 签名管理表
+    tempTechnicalChangeRegulationModelId: "fa91284699654054988f7d90fd2b3f15"  # 轨道运营临时技术变更
+    tempRelatedRegulationId: "e60ac34a6d014a748b2268573ebc8de2" #临时技术变更制度明细
+    permissionManagementFormModelId: "f165c3f5426146eabd66507ccaf528df" # 制度联系人权限表
+    pdfDownloadPermissionDeptFormModelId: "ab91a631e7914d2aa2da997c7879f929"  # pdf带水印制度下载部门
+    pdfRegulationFileFormModelId: "678a194bcb7b95057eef70c9" # pdf制度文件表
+    boardRegulationFormModelId: "67f5e686faedcd765a978bde" # 董事会制度信息单
+  department:
+    deptTreeSelectRedisKey: "DEPT_TREE_SELECT_QIQIAO"
+    getById: "/open/departments/{departmentId}"
+    getChildren: "/open/departments/{departmentId}/children"
+    getParent: "/open/departments/{departmentId}/parent"
+    getRoot: "/open/departments/root"
+    getByIdList: "/open/departments/list"
+  table:
+    saveOrUpdate: "/open/applications/{applicationId}/forms/{formModelId}"
+    query: "/open/applications/{applicationId}/forms/{formModelId}/query"
+    page: "/open/applications/{applicationId}/forms/{formModelId}"
+    queryById: "/open/applications/{applicationId}/forms/{formModelId}/{id}"
+    delete: "/open/applications/{applicationId}/forms/{formModelId}/{id}"
+    batchSave: "/open/applications/{applicationId}/forms/{formModelId}/batch_save"
+    batchUpdate: "/open/applications/{applicationId}/forms/{formModelId}/batch_update"
+    batchDelete: "/open/applications/{applicationId}/forms/{formModelId}/batch_delete"
+    upload: "/open/file_upload/applications/{applicationId}/form_models/{formModelId}"
+    download: "/open/file_download/applications/{applicationId}/files/{fileId}?X-Auth0-Token={token}"
+  workflow:
+    form: "/open/applications/{applicationId}/workflow/{modelId}/form"
+    start: "/open/applications/{applicationId}/workflow/process_definitions/{modelId}/start"
+    delete: "open/applications/{applicationId}/workflow/process_instances/{processInstanceId}"
+    nextApprovers: "/open/applications/{applicationId}/workflow/process_definitions/{processModelId}/next_approvers/designated-nodes"
+  callbackTaskId:
+    OACallBackTaskId: "key_1727251805668_122838"
+    BoardOACallBackTaskId: "key_1724824391203_150270"
+
+# 配置rocketmq
+rocketmq:
+  # 指定namesrv地址
+  name-server: 10.99.205.183:9876;10.99.205.184:9876
+  producer:
+    #生产者group名称
+    group: group_regulation_qiqiao
+    #一次发送多少数量消息
+    max-message-size: 4096
+    #发送消息超时时间,默认3000
+    send-message-timeout: 3000
+    #发送消息失败重试次数，默认2
+    retry-times-when-send-async-failed: 2
+  consumer:
+    office_convert:
+      group: "group_ecm"
+#      topic_bii: "topic-cps-callback-80000130000"
+      topic_bjmoa: "topic-cps-callback-80000170000"
+
+chat-service:
+  params:
+    is_knowledge: false
+    memory: 0
+    top_p: 5
+    max_length: 2192
+    temperature: 0.1
+    model: "Qwen2-72B-Instruct-AWQ"
+  api: "https://chatai.bii.com.cn/api/chat-process"
+  knowledge_base:
+    url: "http://127.0.0.1:3002"
+    file_path: "/data/base-python/files/"
+    #prompt_template: "请严格基于以下制度信息来回答问题，制度信息用"""包围起来了。\n 如果依靠制度信息无法回答问题，那就返回“我不明白你在问什么，你可以换一种问法吗？”，不要编造一个答案出来。\n 制度信息：""" {knowledge} """\n 问题：{question}\n"
+    prompt_template: "基于以下已知信息，简洁和专业地来回答用户的问题。如果无法从中得到答案，请说“根据已知信息无法回答问题”或“没有提供足够的相关信息”，\n 已知内容:{knowledge} 问题:{question}"
+    update_knowledge: "${chat-service.knowledge_base.url}/regulation_update"
+    query_knowledge: "${chat-service.knowledge_base.url}/regulation_knowledge"
+
+# 企业微信
+wxConfig:
+  corpId: "wwae49a5f164f53f25"
+  wxAppSecret: "1x5BlRZzKl6z1rf9BpsDUBxIOKGbuxFenPMLx0agupA"
+  agentid: "1000156"
+  qywxBaseUrl: "https://qywx.bii.com.cn:85"
+  getWxToken: "${wxConfig.qywxBaseUrl}/cgi-bin/gettoken?corpid=%s&corpsecret=%s"
+  getWxTicket: "${wxConfig.qywxBaseUrl}/cgi-bin/get_jsapi_ticket?access_token=%s"
+  getWxUserInfo: "${wxConfig.qywxBaseUrl}/cgi-bin/user/getuserinfo?access_token=%s&code=%s"
+  sendMessageUrl: "${wxConfig.qywxBaseUrl}/cgi-bin/message/send?access_token=%s"
+  msgToken: "fhpKCm8SSRjOSPH8BV8"
+  msgEncodingAESKey: "owjQpa9oBNjQHkSErpORfuoXLneCVJ1Ch7HcgaaBb78"
+  publicCorpId: "wx037852f6e71ccea1"
+  publicWxAppSecret: "axYhevlMVGtZaglrrX6TKY7whqqgt6I13ycQiw9ETdg"
+  publicGetWxToken: "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s"
+  publicGetWxTicket: "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=%s"
+
+# 档案系统
+archive:
+  appid: "bzsystem" # 档案系统分配的规章制度系统应用id
+  secret: "1qaz@WSX" # 应用密钥
+  unitcode: "A040" # 全宗标识
+  libcode: "M2" # 档案门类编码
+  tokenUrl: "https://ams-test.bii.com.cn/archive/token" # 鉴权接口地址
+  addFileUrl: "https://ams-test.bii.com.cn/archive/addFile" # 受理文件归档接口地址
+
+# 5: 本部
+# （正式178，测试179）轨道运营
+oa-workflow:
+  bii-regulation-plan: "1710" # 制度计划单
+  bii-regulation-plan-name: "京投-制度系统计划报送流程-{creator}-{date}" # 流程名称
+  bii-special-audit: "1731" # 京投-公司管理制度专项审核流程
+  bii-special-audit-name: "京投-公司管理制度专项审核流程-{creator}-{date}" # 流程名称
+  shiyebu-special-audit: "1732" # 京投-公司管理制度专项审核流程
+  shiyebu-special-audit-name: "资产经营开发事业部-制度法律审核表-{creator}-{date}" # 流程名称
+  bjmoa-publish-company: "1704" # 公司级
+  bjmoa-publish-department: "1739" # 部门级
+oa-webservice:
+  WorkflowServiceHttpPort_address: "http://10.99.205.45:10010//services/WorkflowService"
+  CustomDocServiceHttpPort_address: "http://10.99.205.45:10010//services/CustomDocService"

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.regulation.mapper.ZyRelatedRegulationMapper">
+    <select id="queryByRegulationIdentifiers" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulation">
+        SELECT *
+        FROM zy_related_regulation
+        WHERE regulation_identifier_a = #{regulationIdentifierA}
+          AND regulation_identifier_b = #{regulationIdentifierB}
+    </select>
+
+    <select id="queryByRegulationIdentifier" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulation">
+        SELECT *
+        FROM zy_related_regulation
+        WHERE regulation_identifier_a = #{regulationIdentifier}
+          OR regulation_identifier_b = #{regulationIdentifier}
+    </select>
+
+    <delete id="deleteByRegulationIdentifier">
+        DELETE FROM zy_related_regulation
+        WHERE regulation_identifier_a = #{regulationIdentifier}
+           OR regulation_identifier_b = #{regulationIdentifier}
+    </delete>
+</mapper>

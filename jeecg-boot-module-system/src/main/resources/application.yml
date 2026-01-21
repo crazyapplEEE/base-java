@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: bii-regulation-qiqiao
+    cnName: 京投制度七巧系统
+  profiles:
+    active: dev

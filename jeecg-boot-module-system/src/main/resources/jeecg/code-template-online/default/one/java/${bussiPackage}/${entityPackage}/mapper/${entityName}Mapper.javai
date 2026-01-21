@@ -1,0 +1,17 @@
+package ${bussiPackage}.${entityPackage}.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+import ${bussiPackage}.${entityPackage}.entity.${entityName};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * @author jeecg-boot
+ * @date ${.now?string["yyyy-MM-dd"]}
+ */
+@Mapper
+public interface ${entityName}Mapper extends BaseMapper<${entityName}> {
+
+}

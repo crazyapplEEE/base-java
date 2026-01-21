@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.regulation.mapper.ZyRegulationBjmoaMapper">
+    <sql id="queryLogic">
+        WHERE zrb.del_flag = 0
+        <if test="queryDTO.active != null">
+            AND zrb.active = #{queryDTO.active}
+        </if>
+        <if test="queryDTO.name != null and queryDTO.name != ''">
+            AND zrb.name LIKE CONCAT('%', #{queryDTO.name}, '%')
+        </if>
+        <if test="queryDTO.docIdList != null and queryDTO.docIdList.size() > 0">
+            AND zrb.content_doc_id IN
+            <foreach collection="queryDTO.docIdList" item="deptId" index="index" open="("
+                     close=")" separator=",">
+                #{deptId}
+            </foreach>
+        </if>
+        <if test="queryDTO.codeList != null and queryDTO.codeList.size() > 0">
+            AND zrb.code IN
+            <foreach collection="queryDTO.codeList" item="code" index="index" open="("
+                     close=")" separator=",">
+                #{code}
+            </foreach>
+        </if>
+        <if test="queryDTO.identifierList != null and queryDTO.identifierList.size() > 0">
+            AND zrb.identifier IN
+            <foreach collection="queryDTO.identifierList" item="identifier" index="index" open="("
+                     close=")" separator=",">
+                #{identifier}
+            </foreach>
+        </if>
+        <if test="queryDTO.levelNameList != null and queryDTO.levelNameList.size() > 0">
+            AND zrb.level_name IN
+            <foreach collection="queryDTO.levelNameList" item="levelName" index="index" open="("
+                     close=")" separator=",">
+                #{levelName}
+            </foreach>
+        </if>
+        <if test="queryDTO.categoryNameList != null and queryDTO.categoryNameList.size() > 0">
+            AND zrb.category_name IN
+            <foreach collection="queryDTO.categoryNameList" item="categoryName" index="index" open="("
+                     close=")" separator=",">
+                #{categoryName}
+            </foreach>
+        </if>
+        <if test="queryDTO.subCategoryNameList != null and queryDTO.subCategoryNameList.size() > 0">
+            AND zrb.sub_category_name IN
+            <foreach collection="queryDTO.subCategoryNameList" item="subCategoryName" index="index" open="("
+                     close=")" separator=",">
+                #{subCategoryName}
+            </foreach>
+        </if>
+        <if test="queryDTO.managementCategoryNameList != null and queryDTO.managementCategoryNameList.size() > 0">
+            AND zrb.management_category_name IN
+            <foreach collection="queryDTO.managementCategoryNameList" item="managementCategoryName" index="index" open="("
+                     close=")" separator=",">
+                #{managementCategoryName}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="queryByContentFileId" resultType="org.jeecg.modules.regulation.entity.ZyRegulationBjmoa">
+        SELECT *
+        FROM zy_regulation_bjmoa zrb
+        WHERE zrb.content_file_id = #{contentFileId}
+    </select>
+
+    <select id="queryByIdentifier" resultType="org.jeecg.modules.regulation.entity.ZyRegulationBjmoa">
+        SELECT *
+        FROM zy_regulation_bjmoa zrb
+        WHERE zrb.identifier = #{identifier}
+    </select>
+
+    <select id="queryByQiqiaoRegulationId" resultType="org.jeecg.modules.regulation.entity.ZyRegulationBjmoa">
+        SELECT *
+        FROM zy_regulation_bjmoa zrb
+        WHERE zrb.qiqiao_regulation_id = #{qiqiaoRegulationId}
+    </select>
+
+    <select id="queryNewestVersionPageList" resultType="org.jeecg.modules.regulation.vo.ZyRegulationBjmoaVO">
+        SELECT zrb.id,
+        zrb.name,
+        zrb.code,
+        zrb.category_id,
+        zrb.category_name,
+        zrb.level_id,
+        zrb.level_name,
+        zrb.management_category_id,
+        zrb.management_category_name,
+        zrb.sub_category_id,
+        zrb.sub_category_name,
+        zrb.contingency_plan_category_id,
+        zrb.contingency_plan_category_name,
+        zrb.line_id,
+        zrb.line_name,
+        zrbh.content_doc_id,
+        zrbh.content_file_id,
+        zrbh.version,
+        zrbh.create_time,
+        zrbh.publish_time,
+        zrbh.abolish_time,
+        zrbh.request_id
+        FROM zy_regulation_bjmoa zrb
+        INNER JOIN zy_regulation_bjmoa_history zrbh
+        ON zrb.code = zrbh.code AND
+        zrbh.id IN (SELECT MAX(id) FROM zy_regulation_bjmoa_history WHERE publish_time is not null GROUP BY code)
+        <include refid="queryLogic"></include>
+        AND zrb.level_id != '12'
+        ORDER BY publish_time DESC
+    </select>
+
+    <update id="activateByQiqiaoRegulationId">
+        UPDATE zy_regulation_bjmoa zrb
+        SET zrb.active = 1
+        WHERE zrb.qiqiao_regulation_id = #{qiqiaoRegulationId}
+    </update>
+
+    <update id="inactivateByIdentifier">
+        UPDATE zy_regulation_bjmoa zrb
+        SET zrb.active = 0
+        WHERE zrb.identifier = #{identifier}
+    </update>
+
+    <select id="queryRegulationStatistics" resultType="org.jeecg.modules.regulation.vo.ZyRegulationBjmoaStatisticsVO">
+        SELECT category_name, COUNT(1) AS num
+        FROM (SELECT identifier, MAX(publish_time) AS max_publish_time
+              FROM zy_regulation_bjmoa_history
+              WHERE level_id != '12'
+                    AND publish_time IS NOT NULL
+                    AND category_name IS NOT NULL
+              GROUP BY identifier) AS max_publish_times
+              INNER JOIN zy_regulation_bjmoa_history zrbh ON zrbh.identifier = max_publish_times.identifier AND
+                                                             zrbh.publish_time = max_publish_times.max_publish_time AND
+                                                             zrbh.category_id IS NOT NULL
+                <if test="year == 1">
+                    AND YEAR(zrbh.publish_time) = YEAR(NOW())
+                </if>
+        GROUP BY category_name
+    </select>
+
+    <select id="queryRelatedRegulationLevelId" resultType="java.lang.String">
+        SELECT level_id
+        FROM zy_regulation_bjmoa
+        WHERE identifier =
+              (SELECT DISTINCT regulation_identifier_a
+               FROM zy_related_regulation_bjmoa
+               WHERE regulation_identifier_b = #{identifier}
+                 AND regulation_type = '3')
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.regulation.mapper.ZyRegulationBiiHistoryMapper">
+    <select id="queryByIdentifier"
+            resultType="org.jeecg.modules.regulation.entity.ZyRegulationBiiHistory">
+        SELECT *
+        FROM zy_regulation_bii_history zrbh
+        WHERE zrbh.identifier = #{identifier}
+        ORDER BY zrbh.create_time DESC
+    </select>
+
+    <update id="updateAbolishTime">
+        UPDATE zy_regulation_bii_history
+        SET abolish_time = #{abolishTime}
+        WHERE identifier = #{identifier}
+              AND abolish_time IS NULL
+    </update>
+</mapper>

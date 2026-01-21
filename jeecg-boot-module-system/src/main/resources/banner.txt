@@ -1,0 +1,11 @@
+${AnsiColor.BRIGHT_BLUE}    ____  ________   ____  ______________  ____    ___  ______________  _   __   ____    ________    _______   ____
+${AnsiColor.BRIGHT_CYAN}   / __ )/  _/  _/  / __ \/ ____/ ____/ / / / /   /   |/_  __/  _/ __ \/ | / /  / __ \  /  _/ __ \  /  _/   | / __ \
+${AnsiColor.BRIGHT_MAGENTA}  / __  |/ / / /   / /_/ / __/ / / __/ / / / /   / /| | / /  / // / / /  |/ /  / / / /  / // / / /  / // /| |/ / / /
+${AnsiColor.BRIGHT_GREEN} / /_/ // /_/ /   / _, _/ /___/ /_/ / /_/ / /___/ ___ |/ / _/ // /_/ / /|  /  / /_/ / _/ // /_/ / _/ // ___ / /_/ /
+${AnsiColor.BRIGHT_YELLOW}/_____/___/___/  /_/ |_/_____/\____/\____/_____/_/  |_/_/ /___/\____/_/ |_/   \___\_\/___/\___\_\/___/_/  |_\____/
+
+
+${AnsiColor.BRIGHT_GREEN}
+Jeecg  Boot Version: 3.5.1
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
+${AnsiColor.BLACK}

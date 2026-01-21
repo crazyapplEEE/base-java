@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.regulation.mapper.ZyRelatedRegulationBjmoaMapper">
+    <select id="queryByRegulationIdentifiers" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulationBjmoa">
+        SELECT *
+        FROM zy_related_regulation_bjmoa
+        WHERE regulation_identifier_a = #{regulationIdentifierA}
+          AND regulation_identifier_b = #{regulationIdentifierB}
+    </select>
+
+    <select id="queryByRegulationIdentifier" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulationBjmoa">
+        SELECT *
+        FROM zy_related_regulation_bjmoa
+        WHERE regulation_identifier_a = #{regulationIdentifier}
+          OR regulation_identifier_b = #{regulationIdentifier}
+    </select>
+
+    <select id="queryByRegulationIdentifierAndVersion" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulationBjmoa">
+        SELECT *
+        FROM zy_related_regulation_bjmoa
+        WHERE (regulation_identifier_a = #{regulationIdentifier} AND version_a = #{regulationVersion})
+            OR (regulation_identifier_b = #{regulationIdentifier} AND version_b = #{regulationVersion})
+    </select>
+
+    <select id="queryByRegulationIdentifierAndVersionAndCode" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulationBjmoa">
+        SELECT *
+        FROM zy_related_regulation_bjmoa
+        WHERE (regulation_identifier_a = #{regulationIdentifier} AND version_a = #{regulationVersion} AND code_a = #{regulationCode})
+           OR (regulation_identifier_b = #{regulationIdentifier} AND version_b = #{regulationVersion} AND code_b = #{regulationCode})
+    </select>
+
+    <select id="queryInternalRelatedeRegulations" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulationBjmoa">
+        SELECT *
+        FROM zy_related_regulation_bjmoa
+        WHERE regulation_identifier_a = #{regulationIdentifierA}
+            AND version_a = #{regulationVersionA}
+            AND code_a = #{regulationCodeA}
+            AND regulation_identifier_b = #{regulationIdentifierB}
+            AND version_b = #{regulationVersionB}
+            AND code_b = #{regulationCodeB}
+            AND regulation_type = '1'
+        ORDER BY id DESC
+    </select>
+
+    <select id="queryExternalRelatedeRegulations" resultType="org.jeecg.modules.regulation.entity.ZyRelatedRegulationBjmoa">
+        SELECT *
+        FROM zy_related_regulation_bjmoa
+        WHERE regulation_identifier_a = #{regulationIdentifierA}
+            AND version_a = #{regulationVersionA}
+            AND code_a = #{regulationCodeA}
+            AND regulation_identifier_b = #{regulationIdentifierB}
+            AND regulation_type = '2'
+        ORDER BY id DESC
+    </select>
+
+    <delete id="deleteByRegulationIdentifier">
+        DELETE FROM zy_related_regulation_bjmoa
+        WHERE regulation_identifier_a = #{regulationIdentifier}
+           OR regulation_identifier_b = #{regulationIdentifier}
+    </delete>
+
+    <update id="truncateTable">
+        TRUNCATE TABLE zy_related_regulation_bjmoa
+    </update>
+</mapper>

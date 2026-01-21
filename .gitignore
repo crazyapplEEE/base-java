@@ -1,0 +1,16 @@
+/target/
+/static/
+/.idea/
+*.iml
+rebel.xml
+tmp*
+# Project exclude paths
+/jeecg-boot-base/jeecg-boot-base-api/jeecg-system-local-api/target/
+/jeecg-boot-base/jeecg-boot-base-core/target/
+/jeecg-boot-base/jeecg-boot-base-tools/target/
+/jeecg-boot-module-system/target/
+/module-common/target/
+/module-content-management/target/
+/module-oa-webservice/target/
+/module-public-management/target/
+/module-qywx/target/

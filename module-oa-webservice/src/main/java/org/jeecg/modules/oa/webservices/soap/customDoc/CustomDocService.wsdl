@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://localhost/services/CustomDocService"
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://webservices.docs.weaver"
+                  targetNamespace="http://localhost/services/CustomDocService">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                    elementFormDefault="qualified" targetNamespace="http://localhost/services/CustomDocService">
+            <xsd:element name="getDoc">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="in0" type="xsd:int"/>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="in1" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="ArrayOfInt">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="int" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfString">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="string" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getDocResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="ns1:DocInfo"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="loginByLoginId">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="loginByLoginIdResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="loginByOaId">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="loginByOaIdResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified"
+                    elementFormDefault="qualified" targetNamespace="http://webservices.docs.weaver">
+            <xsd:complexType name="DocInfo">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="accessorycount" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="allParentName" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="assetid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="attachments" nillable="true" type="ns1:ArrayOfDocAttachment"/>
+                    <xsd:element minOccurs="0" name="childdoc" nillable="true" type="tns:ArrayOfInt"/>
+                    <xsd:element minOccurs="0" name="chiledocname" nillable="true" type="tns:ArrayOfString"/>
+                    <xsd:element minOccurs="0" name="crmid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docCode" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docEdition" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docEditionId" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docEditionStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docPublishType" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docStatus" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docStatusStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docSubject" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docType" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docapprovedate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docapprovetime" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docapproveuserid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docapproveusername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docapproveusertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docarchivedate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docarchivetime" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docarchiveuserid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docarchiveusername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docarchiveusertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doccanceldate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccanceltime" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccanceluserid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doccancelusername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccancelusertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doccontent" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccreatedate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccreaterid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doccreatername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccreatertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doccreatetime" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doccustomfields" nillable="true" type="ns1:ArrayOfDocCustomField"/>
+                    <xsd:element minOccurs="0" name="docdepartmentStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docdepartmentid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docinvaldate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docinvaltime" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docinvaluserid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docinvalusername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docinvalusertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doclangurage" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doclangurageStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doclastmoddate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doclastmodtime" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doclastmoduserid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="doclastmodusername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="doclastmodusertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="dummyIds" nillable="true" type="tns:ArrayOfInt"/>
+                    <xsd:element minOccurs="0" name="dummyNames" nillable="true" type="tns:ArrayOfString"/>
+                    <xsd:element minOccurs="0" name="financeid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="hrmresid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="id" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="imagefileId" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="invalidationdate" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="isreply" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="itemid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="keyword" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="maincategory" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="maincategoryStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="maindoc" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="maindocname" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="ownerid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="ownername" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="ownertype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="parentids" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="pictures" nillable="true" type="ns1:ArrayOfDocAttachment"/>
+                    <xsd:element minOccurs="0" name="projectid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="publishable" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="replaydoccount" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="replydocid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="seccategory" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="seccategoryStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="subcategory" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="subcategoryStr" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="versionId" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfDocCustomField">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="DocCustomField" nillable="true"
+                                 type="ns1:DocCustomField"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="DocCustomField">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="fielddbtype" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="fieldhtmltype" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="fieldid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="fieldshow" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="fieldtype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="fieldvalue" nillable="true" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ArrayOfDocAttachment">
+                <xsd:sequence>
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="DocAttachment" nillable="true"
+                                 type="ns1:DocAttachment"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="DocAttachment">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" name="aesCode" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docImageFileId" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="docfiletype" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="docid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="filecontent" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="filename" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="filerealpath" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="filetype" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="fileused" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="imagefiledesc" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="imagefileheight" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="imagefileid" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="imagefilename" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="imagefilesize" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="imagefilewidth" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="isAesEncrype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="isencrype" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="isextfile" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="iszip" type="xsd:int"/>
+                    <xsd:element minOccurs="0" name="versionDetail" nillable="true" type="xsd:string"/>
+                    <xsd:element minOccurs="0" name="versionId" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="getDocResponse">
+        <wsdl:part name="parameters" element="tns:getDocResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="loginByLoginIdRequest">
+        <wsdl:part name="parameters" element="tns:loginByLoginId"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="loginByLoginIdResponse">
+        <wsdl:part name="parameters" element="tns:loginByLoginIdResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getDocRequest">
+        <wsdl:part name="parameters" element="tns:getDoc"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="loginByOaIdResponse">
+        <wsdl:part name="parameters" element="tns:loginByOaIdResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="loginByOaIdRequest">
+        <wsdl:part name="parameters" element="tns:loginByOaId"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="CustomDocServicePortType">
+        <wsdl:operation name="getDoc">
+            <wsdl:input name="getDocRequest" message="tns:getDocRequest"></wsdl:input>
+            <wsdl:output name="getDocResponse" message="tns:getDocResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="loginByLoginId">
+            <wsdl:input name="loginByLoginIdRequest" message="tns:loginByLoginIdRequest"></wsdl:input>
+            <wsdl:output name="loginByLoginIdResponse" message="tns:loginByLoginIdResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="loginByOaId">
+            <wsdl:input name="loginByOaIdRequest" message="tns:loginByOaIdRequest"></wsdl:input>
+            <wsdl:output name="loginByOaIdResponse" message="tns:loginByOaIdResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="CustomDocServiceHttpBinding" type="tns:CustomDocServicePortType">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getDoc">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="getDocRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getDocResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="loginByLoginId">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="loginByLoginIdRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="loginByLoginIdResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="loginByOaId">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="loginByOaIdRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="loginByOaIdResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="CustomDocService">
+        <wsdl:port name="CustomDocServiceHttpPort" binding="tns:CustomDocServiceHttpBinding">
+            <wsdlsoap:address location="http://10.99.205.45:10010//services/CustomDocService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
